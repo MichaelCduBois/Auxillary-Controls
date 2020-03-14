@@ -1,5 +1,5 @@
 // Michael duBois
-// 2020-03-031
+// 2020-03-10
 #include <Joystick.h>
 
 // First pin connected
@@ -12,9 +12,9 @@ const int buttonCount = 10;
 int lastButtonState[buttonCount] = {};
 
 // Setup button types and associated PINS
-int manualButton[5] = {0,1,2,3,4}; // Buttons in a constant state
-int toggleButton[4] = {5,6,7,8}; // Buttons treated as a toggle
-int holdButton[1] = {9}; // Buttons held for defined duration
+int manualButton[0] = {}; // Buttons in a constant state
+int toggleButton[0] = {}; // Buttons treated as a toggle
+int holdButton[0] = {}; // Buttons held for defined duration
 
 // Duration in Seconds
 const int toggleDuration = 50;
@@ -28,10 +28,10 @@ Joystick_ Joystick(
   0, // Number of Hat Switches
   false, // X-Axis Available
   false, // Y-Axis Available
-  true, // Z-Axis Available
+  false, // Z-Axis Available
   false, // X-Rotational-Axis Available
   false, // Y-Rotational-Axis Available
-  true, // Z-Rotational-Axis Available
+  false, // Z-Rotational-Axis Available
   false, // Rudder Available
   false, // Throttle Available
   false, // Accelerator Available
@@ -74,7 +74,6 @@ void loop() {
       for (int pin = 0; pin < sizeof(manualButton) / sizeof(manualButton[0]); pin++) {
         if (index == manualButton[pin]) {
           Joystick.setButton(index, currentButtonState);
-          // lastButtonState = currentButtonState;
         }
       }
       lastButtonState[index] = currentButtonState;
@@ -83,10 +82,11 @@ void loop() {
 
   // Reads the value of pin A0 -- Range 0 - 1023
   int sensorValue = analogRead(A0);
-  // Inverts value of pin A0 to change direction
-  int raw = (sensorValue - 1023) * -1;
+  // Inverts value of pin A0 to change direction mapping range from 0-1023 as 100 - 0
+  // int sensorValue = map(analogRead(A0), 0, 1023, 100, 0);
   // Sets throttle to value
-  Joystick.setZAxis(raw);
+  Joystick.setZAxis(sensorValue);
+  Serial.println(sensorValue);
 
   delay(50);
 }
